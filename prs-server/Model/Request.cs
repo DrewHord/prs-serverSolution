@@ -16,14 +16,16 @@ namespace prs_server.Model {
         [StringLength(80)]
         public string RejectionReason { get; set; }
         [Required, StringLength(20)]
-        public string DeliveryMode { get; set; }
+        public string DeliveryMode { get; set; } = "Pickup";
         [Required, StringLength(10)]
-        public string Status { get; set; }
-        [Column(TypeName= "decimal(11,2)")]
-        public decimal Total { get; set; }
+        public string Status { get; set; } = "New";
+        [Column(TypeName = "decimal(11,2)")]
+        public decimal Total { get; set; } = 0;
        
         public int UserId { get; set; }
         public virtual User User { get; set; }
+
+
 
         public Request() { }
 

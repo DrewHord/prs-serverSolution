@@ -17,6 +17,8 @@ namespace prs_server.Model {
 
         public AppDbContext() { }
 
+        
+
 
         public AppDbContext(DbContextOptions<AppDbContext> options): base(options) { }
 

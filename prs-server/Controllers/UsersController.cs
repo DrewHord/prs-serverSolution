@@ -20,8 +20,8 @@ namespace prs_server.Controllers
             _context = context;
         }
         //GET : api/Users/Username/Password
-        public User Login(string username, string password) {
-            return _context.Users.SingleOrDefault(x => x.Username == username
+        public async Task<ActionResult<User>> LoginAsync(string username, string password) {
+            return await _context.Users.SingleOrDefaultAsync(x => x.Username == username
                                                   && x.Password == password);
         }
 

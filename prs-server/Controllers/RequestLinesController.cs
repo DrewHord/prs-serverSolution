@@ -21,7 +21,7 @@ namespace prs_server.Controllers
         }
 
         //recalcs total property when an insert, update, or delete occurs
-        private void RecalculateRequestTotal(int requestId) {
+        private async Task<IActionResult> RecalculateRequestTotal(int requestId) {
             var request = _context.Requests.Find(requestId);
             request.Total = (from rl in _context.RequestLines
                              join p in _context.Products
@@ -30,7 +30,8 @@ namespace prs_server.Controllers
                              select new {
                                  LineTotal = rl.Quantity * p.Price
                              }).Sum(x => x.LineTotal);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         // GET: api/RequestLines

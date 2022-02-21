@@ -19,45 +19,55 @@ namespace prs_server.Controllers
         {
             _context = context;
         }
+
+    
+        
         //Creating Change Method?
-        public void Change(Request request) {
-            _context.SaveChanges();
+        public async void Change(Request request) {
+           await  _context.SaveChangesAsync();
+            
         }
 
         //GET REVIEWS METHOD
-        public IEnumerable<Request> GetRequestInReview(int userId) {
-            var requests = _context.Requests
+        public async Task<ActionResult<IEnumerable<Request>>> GetRequestInReview(int userId) {
+            var requests =await _context.Requests
                 .Where(x => x.Status == "REVIEW" && x.UserId != userId)
-                .ToList();
-            return requests;
+                .ToListAsync();
+            return  requests;
         }
 
         //Update Function
-        // GET: api/requests/5/review
+        // PUT: api/requests/5/review
         [HttpPut]
-        public void SetReview(Request request) {
+        public async Task<IActionResult> SetReview(Request request) {
             if(request.Total <= 50) {
                 request.Status = "APPROVED";
+                await _context.SaveChangesAsync();
             } else {
                 request.Status = "REVIEW";
             }
             Change(request);
+            return NoContent();
         }
 
         //SET APPROVED
         // GET: api/request/5/approve
         [HttpPut]
-        public void SetApproved(Request request) {
+        public async Task<ActionResult>  SetApproved(Request request) {
             request.Status = "APPROVED";
             Change(request);
+            await _context.SaveChangesAsync();
+            return NoContent();            
         }
 
         //SET REJECTED
         // GET: api/request/5/rejected
         [HttpPut]
-        public void SetRejected(Request request) {
+        public async Task<ActionResult> SetRejected(Request request) {
             request.Status = "REJECTED";
             Change(request);
+            await _context.SaveChangesAsync();
+            return NoContent();            
         }
 
         // GET: api/Requests

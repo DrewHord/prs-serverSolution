@@ -19,7 +19,7 @@ namespace prs_server.Controllers
         {
             _context = context;
         }
-
+        //GET : api/Users/Username/Password
         public User Login(string username, string password) {
             return _context.Users.SingleOrDefault(x => x.Username == username
                                                   && x.Password == password);

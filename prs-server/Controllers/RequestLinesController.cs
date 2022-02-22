@@ -24,7 +24,7 @@ namespace prs_server.Controllers
         // PUT: api/requestlines/5/recalc
         [HttpPut("{id}")]
         private async Task<IActionResult> RecalculateRequestTotal(int requestId) {
-            var request = _context.Requests.Find(requestId);
+            var request = await _context.Requests.FindAsync(requestId);
             request.Total = (from rl in _context.RequestLines
                              join p in _context.Products
                              on rl.ProductId equals p.Id
@@ -33,7 +33,7 @@ namespace prs_server.Controllers
                                  LineTotal = rl.Quantity * p.Price
                              }).Sum(x => x.LineTotal);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok();
         }
 
         // GET: api/RequestLines

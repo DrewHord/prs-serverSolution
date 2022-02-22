@@ -29,47 +29,48 @@ namespace prs_server.Controllers
         }
 
         //GET REVIEWS METHOD
-        // PUT: api/requests/5/getreview
-        [HttpPut("{id}")]
+        // GET:/api/Requests/review/{userid}
+        [HttpGet("review/{id}")]
         public async Task<ActionResult<IEnumerable<Request>>> GetRequestInReview(int userId) {
-            var requests =await _context.Requests
+            return await _context.Requests.Include(x => x.User)            
                 .Where(x => x.Status == "REVIEW" && x.UserId != userId)
                 .ToListAsync();
-            return  requests;
+            
         }
 
-        //Update Function
-        // PUT: api/requests/5/review
-        [HttpPut("{id}")]
+        //Review Request
+        //PUT:/api/requests/5/review
+        [HttpPut("review")]
         public async Task<IActionResult> SetReview(Request request) {
             if(request.Total <= 50) {
                 request.Status = "APPROVED";
-                await _context.SaveChangesAsync();
+                
             } else {
                 request.Status = "REVIEW";
+                
             }
             Change(request);
-            return NoContent();
+            return await PutRequest(request.Id, request);
         }
 
         //SET APPROVED
-        // GET: api/request/5/approve
-        [HttpPut("{id}")]
-        public async Task<ActionResult>  SetApproved(Request request) {
+        // Put:/api/requests/5/approve
+        [HttpPut("{id}/approve")]
+        public async Task<IActionResult>  SetApproved(Request request) {
             request.Status = "APPROVED";
-            Change(request);
-            await _context.SaveChangesAsync();
-            return NoContent();            
+            Change(request);           
+            return await PutRequest(request.Id, request);            
         }
 
         //SET REJECTED
-        // GET: api/request/5/rejected
-        [HttpPut("{id}")]
-        public async Task<ActionResult> SetRejected(Request request) {
+        // Put:/api/request/5/rejected
+        
+        [HttpPut("{id}/rejected")]
+        public async Task<IActionResult> SetRejected(Request request) {
             request.Status = "REJECTED";
             Change(request);
-            await _context.SaveChangesAsync();
-            return NoContent();            
+            
+            return await PutRequest(request.Id, request);            
         }
 
         // GET: api/Requests

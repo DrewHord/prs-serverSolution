@@ -42,6 +42,7 @@ namespace prs_server.Model {
                 builder.UseSqlServer("server=localhost\\sqlexpress;database=PrsDb;trusted_connection=true");
             }
         }
+       
 
     }
 }

@@ -11,15 +11,14 @@ namespace prs_server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
-    {
+    public class UsersController : ControllerBase {
         private readonly AppDbContext _context;
 
-        public UsersController(AppDbContext context)
-        {
+        public UsersController(AppDbContext context) {
             _context = context;
         }
-        //GET : api/Users/Username/Password
+        //GET : /api/Users/Username/Password
+        [HttpGet("{username}/{password}")]
         public async Task<ActionResult<User>> LoginAsync(string username, string password) {
             return await _context.Users.SingleOrDefaultAsync(x => x.Username == username
                                                   && x.Password == password);

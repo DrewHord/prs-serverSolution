@@ -21,6 +21,8 @@ namespace prs_server.Controllers
         }
 
         //recalcs total property when an insert, update, or delete occurs
+        // PUT: api/requestlines/5/recalc
+        [HttpPut("{id}")]
         private async Task<IActionResult> RecalculateRequestTotal(int requestId) {
             var request = _context.Requests.Find(requestId);
             request.Total = (from rl in _context.RequestLines

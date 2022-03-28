@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prs_server.Model;
 
+
 namespace prs_server.Controllers
 {
     [Route("api/[controller]")]
@@ -18,6 +19,13 @@ namespace prs_server.Controllers
         public VendorsController(AppDbContext context)
         {
             _context = context;
+        }
+
+        //Creating Instance of Po class ?
+
+        [HttpGet("po/{vendorId}")]
+        public async Task<ActionResult<IEnumerable<Po>>> CreatePo(int vendorId) {
+            return await _context.Pos.ToListAsync();
         }
 
         // GET: api/Vendors
@@ -102,6 +110,38 @@ namespace prs_server.Controllers
         private bool VendorExists(int id)
         {
             return _context.Vendors.Any(e => e.Id == id);
+        }
+        // GET: api/Vendors/Po/5
+        [HttpGet("po/{vendorId}")]
+        public async Task<ActionResult<Po>> Po(int vendorId) {
+            var po = new Po();
+            po.Vendor = await _context.Vendors.FindAsync(vendorId);
+
+            var lines = from v in _context.Vendors
+                        join p in _context.Products
+                            on v.Id equals p.VendorId
+                        join l in _context.RequestLines
+                            on p.Id equals l.ProductId
+                        join r in _context.Requests
+                            on l.RequestId equals r.Id
+                        where r.Status.Equals("APPROVED")
+                        select new {
+                            p.Id, Product = p.Name, l.Quantity, p.Price,
+                            LineTotal = p.Price * l.Quantity
+                        };
+            var sortedLines = new SortedList<int, Poline>();
+            foreach (var l in lines) {
+                if (!sortedLines.ContainsKey(l.Id)) {
+                    var poline = new Poline() {
+                        Product = l.Product, Quantity = 0, Price = l.Price, LineTotal = l.LineTotal
+                    };
+                    sortedLines.Add(l.Id, poline);
+                }
+                sortedLines[l.Id].Quantity += l.Quantity;
+            }
+            po.Polines = sortedLines.Values;
+            po.PoTotal = sortedLines.Sum(x => x.Value.LineTotal);
+            return Ok(po);
         }
     }
 }

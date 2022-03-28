@@ -12,17 +12,21 @@ namespace prs_server.Model {
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Request> Requests { get; set; }
         public virtual DbSet<RequestLine> RequestLines { get; set; }
-
+        public virtual DbSet<Po> Pos { get; set; }
+        public virtual DbSet<Poline> Polines { get; set; }
 
 
         public AppDbContext() { }
 
-        
-
+  
 
         public AppDbContext(DbContextOptions<AppDbContext> options): base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder) {
+
+            builder.Entity<Po>().HasNoKey();
+            builder.Entity<Poline>().HasNoKey();
+
             builder.Entity<User>(e => {
                 e.HasIndex(p => p.Username).IsUnique(true);
             });

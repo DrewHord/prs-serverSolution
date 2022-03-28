@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace prs_server.Model {
+    
     public class Request {
 
         public int Id { get; set; }
@@ -24,6 +26,8 @@ namespace prs_server.Model {
        
         public int UserId { get; set; }
         public virtual User User { get; set; }
+
+        public virtual IEnumerable<RequestLine> Requestlines { get; set; }
 
 
 
